@@ -1,0 +1,36 @@
+/* Custom styles for app page */
+
+/* Styles for main app container */
+
+div#appContent {
+    background: white !important;
+    margin: 0px auto;
+    padding: 20px;
+    max-width: 980px;
+}
+
+
+/* Styles for Back button */
+
+.content-control-menu-nav .horizontal-icolink {
+    font-weight: 600;
+}
+
+.content-control-menu-nav {
+    padding-left: 25px;
+    padding-right: 24px;
+    font-size: 16px;
+    height: 50px;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    display: flex;
+    align-items: center;
+    display: none;
+}
+
+/* Styles for edit product label page */
+
+.edit-product-label {
+    display: none;
+}
+

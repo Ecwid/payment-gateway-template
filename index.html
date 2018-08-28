@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="CssFw.css"/>
+	<link rel="stylesheet" href="https://djqizrxa6f10j.cloudfront.net/ecwid-sdk/css/1.3.2/ecwid-app-ui.css"/>
+	<script src="https://djqizrxa6f10j.cloudfront.net/ecwid-sdk/js/1.2.5/ecwid-app.js"></script>
+
+</head>
+
+<body class='normalized'>
+
+<!-- Back button block START -->
+
+<div onclick="goBack();" class="content-control-menu-nav" style="">
+	<a class="horizontal-icolink icolink-small icolink-prepend">
+		<span class="icon-arr-left"></span> <span class="gwt-InlineLabel">BACK</span>
+	</a>
+</div>
+
+<!-- Back button block END -->
+
+<!-- Main app block START -->
+
+<div class="settings-page main">
+		<div class="settings-page__header">
+			<div class="settings-page__titles settings-page__titles--left">
+				<h1 class="settings-page__title">Payment app template</h1>
+				<div class="settings-page__subtitle">A quick way to get started with a native payment app</div>
+			</div>
+		</div>
+<!-- APP SETTINGS AREA START -->
+
+    <div class="settings-page__section settings" style="padding-bottom: 0.1px">
+        <div class="settings-page__titles settings-page__titles--left">
+            <h2 class="settings-page__title"></h2>
+            <div class="settings-page__subtitle"></div>
+        </div>
+			<div class="named-area">
+				<div class="named-area__header">
+					<div class="named-area__titles"><h4 class="named-area__title h4">Set up the application</h4>
+						<span class="named-area__subtitle">This section contains call to action and status cards</span></div>
+					<div class="named-area__description"></div>
+					<div class="named-area__additional"></div>
+				</div>
+				<div class="named-area__body">
+
+<!-- Instructions title block START -->
+<!-- Check input element for example of how to set data attributes to save to storage later -->
+
+					<div class="a-card a-card--normal">
+						<div class="a-card__paddings">
+							<div class="titled-items-list">
+								<div class="titled-items-list__item">
+									<div class="fieldset" style="width: 100%">
+										<div class="fieldset__title">Merchant ID</div>
+										<div class="field field--medium field--filled">
+											<span class="fieldset__svg-icon"></span>
+											<label class="field__label">Merchant ID</label>
+
+											<!-- Instruction title input. Use data attributes as below to save and update the value to/from application storage via functions.js -->
+											<input data-name="merchantId" data-visibility="private" type="text" class="field__input" tabindex="4" maxlength="64">
+											
+
+											<div class="field__placeholder">Merchant ID</div>
+											<span class="field-state--success">
+				<svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px" viewBox="0 0 26 26" focusable="false"><path d="M5 12l5.02 4.9L21.15 4c.65-.66 1.71-.66 2.36 0 .65.67.65 1.74 0 2.4l-12.3 14.1c-.33.33-.76.5-1.18.5-.43 0-.86-.17-1.18-.5l-6.21-6.1c-.65-.66-.65-1.74 0-2.41.65-.65 1.71-.65 2.36.01z"></path></svg>
+			</span>
+											<span class="field-state--close">
+				<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve" focusable="false"><path d="M15.6,15.5c-0.53,0.53-1.38,0.53-1.91,0L8.05,9.87L2.31,15.6c-0.53,0.53-1.38,0.53-1.91,0c-0.53-0.53-0.53-1.38,0-1.9l5.65-5.64L0.4,2.4c-0.53-0.53-0.53-1.38,0-1.91c0.53-0.53,1.38-0.53,1.91,0l5.64,5.63l5.74-5.73c0.53-0.53,1.38-0.53,1.91,0c0.53,0.53,0.53,1.38,0,1.91L9.94,7.94l5.66,5.65C16.12,14.12,16.12,14.97,15.6,15.5z"></path></svg>
+			</span>
+										</div>
+										<div class="field__error" aria-hidden="true" style="display: none;"></div>
+										<div class="fieldset__note">check your payment gateway -> Settings -> Integration -> API Keys</div>
+									</div>
+
+									<div class="fieldset" style="width: 100%">
+										<div class="fieldset__title">API Secret</div>
+										<div class="field field--medium field--filled">
+											<span class="fieldset__svg-icon"></span>
+											<label class="field__label">API Secret</label>
+
+											<!-- Instruction title input. Use data attributes as below to save and update the value to/from application storage via functions.js -->
+											<input data-name="APIsecret" data-visibility="private" type="text" class="field__input" tabindex="4" maxlength="64">
+											
+
+											<div class="field__placeholder">API Secret</div>
+											<span class="field-state--success">
+				<svg xmlns="http://www.w3.org/2000/svg" width="26px" height="26px" viewBox="0 0 26 26" focusable="false"><path d="M5 12l5.02 4.9L21.15 4c.65-.66 1.71-.66 2.36 0 .65.67.65 1.74 0 2.4l-12.3 14.1c-.33.33-.76.5-1.18.5-.43 0-.86-.17-1.18-.5l-6.21-6.1c-.65-.66-.65-1.74 0-2.41.65-.65 1.71-.65 2.36.01z"></path></svg>
+			</span>
+											<span class="field-state--close">
+				<svg version="1.1" xmlns="http://www.w3.org/2000/svg"  x="0px" y="0px" viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve" focusable="false"><path d="M15.6,15.5c-0.53,0.53-1.38,0.53-1.91,0L8.05,9.87L2.31,15.6c-0.53,0.53-1.38,0.53-1.91,0c-0.53-0.53-0.53-1.38,0-1.9l5.65-5.64L0.4,2.4c-0.53-0.53-0.53-1.38,0-1.91c0.53-0.53,1.38-0.53,1.91,0l5.64,5.63l5.74-5.73c0.53-0.53,1.38-0.53,1.91,0c0.53,0.53,0.53,1.38,0,1.91L9.94,7.94l5.66,5.65C16.12,14.12,16.12,14.97,15.6,15.5z"></path></svg>
+			</span>
+										</div>
+										<div class="field__error" aria-hidden="true" style="display: none;"></div>
+										<div class="fieldset__note">check your payment gateway -> Settings -> Integration -> API Keys</div>
+									</div>
+
+
+
+
+								</div>
+							</div>
+						</div>
+					</div>
+
+
+<!-- APP SETTINGS AREA END -->
+
+
+    </div>
+
+</div>
+
+</div>
+
+
+
+<!-- End contents of third tab -->
+<script src='functions.js'></script>
+<script src="https://djqizrxa6f10j.cloudfront.net/ecwid-sdk/css/1.3.2/ecwid-app-ui.min.js"></script>
+
+<script>
+
+// Autosave feature for fields. Complimentary JS for the one from SDK above
+
+(function initFieldset() {
+
+	var elms = document.querySelectorAll('.field__input, .field__select, .field__textarea, .radio');
+	for (var i = 0; i < elms.length; i++) {
+		elms[i].addEventListener('blur', function(e) {
+			checkFieldChange(this);
+			if (this.classList.contains('field__input') || this.classList.contains('field__textarea')) {
+				saveUserData();
+			}
+		}, false);
+
+		elms[i].addEventListener('change', function() {
+			if (this.value) {
+				saveUserData(); 
+			}
+			else {				
+				saveUserData();
+			}
+		}, false);
+
+		elms[i].addEventListener('click', function() {
+			if (this.value) {
+				saveUserData(); 
+			}
+			else {
+				saveUserData();
+			}
+		}, false);
+ 	}
+})();
+
+</script>
+
+</div>
+
+<!-- Main app block END -->
+
+</body>
+
+</html>
