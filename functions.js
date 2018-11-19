@@ -133,16 +133,14 @@ function setValuesForPage(applicationConfig){
 // Default settings for new accounts
 
 var initialConfig = {
-	public: {
-		cashOnDelivery: "true",
-		condition: "NEW",
-		globalShippingRate: "true",
-		freeShippingRate: "false"
-	},
 	private: {
-		installed: "true",
-		instructionTitle: "crazyPotatoes"
-	}
+		merchantId: "",
+		APIsecret: "",
+		endpointUrl: "https://secure2.authorize.net/gateway/transact.dll",
+		testMode: "true",
+		installed: "yes"
+	},
+	public: {}
 };
 
 initialConfig.public = JSON.stringify(initialConfig.public);
@@ -194,12 +192,17 @@ function saveUserData() {
 
 }
 
+function resetUserData(initialConfig) {
+	setValuesForPage(initialConfig);
+	saveUserData();
+}
+
 
 // Main app function to determine if the user is new or just logs into the app
 
 EcwidApp.getAppStorage('installed', function(value){
 
-	if (value != null) {
+	if (value !== null) {
 		getUserData();
 	}
 	else {
