@@ -1,5 +1,12 @@
 <?php
 
+$client_secret = "lfeKILJMFQVc3vXzW79B6TI5VKs8DFeT"; // This is a dummy value. Place your client_secret key here. You received it from Ecwid team in email when registering the app 
+//$cipher = "AES-128-CBC";     
+$iv = "abcdefghijklmnopqrstuvwx";// this can be generated random if you plan to store it for later but in this case e.g. openssl_random_pseudo_bytes($ivlen);
+$cipher = "aes-128-gcm";
+$ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+$tag = 0;
+
 // If this is a payment request
 
 if (isset($_POST["data"])) {
@@ -40,7 +47,6 @@ if (isset($_POST["data"])) {
 
   // Get payload from the POST and decrypt it
   $ecwid_payload = $_POST['data'];
-  $client_secret = "lfeKILJMFQVc3vXzW79B6TI5VKs8DFeT"; // This is a dummy value. Place your client_secret key here. You received it from Ecwid team in email when registering the app 
 
   // The resulting JSON from payment request will be in $order variable
   $order = getEcwidPayload($client_secret, $ecwid_payload);
@@ -57,7 +63,8 @@ if (isset($_POST["data"])) {
       $firstName = $fullName[0]; $lastName = $fullName[1];
 
       // Encode access token and prepare calltack URL template
-      $callbackPayload = base64_encode($order['token']);
+      $ciphertext_raw = openssl_encrypt($order['token'],$cipher, $client_secret,$options=0,$iv,$tag);
+      $callbackPayload = base64_encode( $ciphertext_raw);
       $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]"."?storeId=".$order['storeId']."&orderNumber=".$order['cart']['order']['orderNumber']."&callbackPayload=".$callbackPayload;
 
       // Request parameters to pass into payment gateway
@@ -130,7 +137,8 @@ if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
 
     // Set variables
     $client_id = "test-rick-payment-template";
-    $token = base64_decode(($_GET['callbackPayload']));
+    $c = base64_decode($_GET['callbackPayload']);
+    $token = openssl_decrypt($c, $cipher, $client_secret, $options=0, $iv,$tag);
     $storeId = $_GET['storeId'];
     $orderNumber = $_GET['orderNumber'];
     $status = $_GET['status'];
