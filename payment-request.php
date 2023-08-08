@@ -113,7 +113,7 @@ if (isset($_POST["data"])) {
             }
         echo "<input type='submit' value='Submit'>";    
         echo "</form>";
-        echo "<script>document.querySelector('#payment_form).submit();</script>";
+        echo "<script>document.querySelector('#payment_form').submit();</script>";
 
 }
 
