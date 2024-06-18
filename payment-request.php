@@ -65,10 +65,22 @@ if (isset($_POST["data"])) {
     $firstName = $fullName[0];
     $lastName = $fullName[1];
 
-    // Encode access token and prepare calltack URL template
+    // Encode access token and prepare callback URL template
     $ciphertext_raw = openssl_encrypt($order['token'], $cipher, $client_secret, $options = 0, $iv, $tag);
     $callbackPayload = base64_encode($ciphertext_raw);
-    $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" . "?storeId=" . $order['storeId'] . "&orderNumber=" . $order['cart']['order']['orderNumber'] . "&callbackPayload=" . $callbackPayload;
+
+    // Encode return URL
+    $returnUrl_raw = openssl_encrypt($order['returnUrl'], $cipher, $client_secret, $options = 0, $iv, $tag);
+    $returnUrlPayload = base64_encode($returnUrl_raw);
+
+    $queryData = http_build_query([
+        'storeId' => $order['storeId'],
+        'orderNumber' => $order['cart']['order']['id'],
+        'callbackPayload' => $callbackPayload,
+        'returnUrlPayload' => $returnUrlPayload,
+    ]);
+
+    $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]?{$queryData}";
 
     // Request parameters to pass into payment gateway
     $request = array(
@@ -137,7 +149,7 @@ function payment_sign($query, $api_key)
 
 // If we are returning back to storefront. Callback from payment
 
-if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
+if (isset($_GET["callbackPayload"]) && isset($_GET["status"]) && isset($_GET["returnUrlPayload"])) {
 
     // Set variables
     $client_id = "test-rick-payment-template";
@@ -146,7 +158,8 @@ if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
     $storeId = $_GET['storeId'];
     $orderNumber = $_GET['orderNumber'];
     $status = $_GET['status'];
-    $returnUrl = "https://app.ecwid.com/custompaymentapps/$storeId?orderId=$orderNumber&clientId=$client_id";
+    $r = base64_decode($_GET['returnUrlPayload']);
+    $returnUrl = openssl_decrypt($r, $cipher, $client_secret, $options = 0, $iv, $tag);
 
     // Prepare request body for updating the order
     $json = json_encode(array(
