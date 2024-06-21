@@ -1,13 +1,12 @@
 <?php
 
+$client_id = "test-rick-payment-template";
 $client_secret = "lfeKILJMFQVc3vXzW79B6TI5VKs8DFeT"; // This is a dummy value. Place your client_secret key here. You received it from Ecwid team in email when registering the app
 //$cipher = "AES-128-CBC";
 $iv = "abcdefghijklmnopqrstuvwx";// this can be generated random if you plan to store it for later but in this case e.g. openssl_random_pseudo_bytes($ivlen);
 $cipher = "aes-128-gcm";
 $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
 $tag = 0;
-
-// If this is a payment request
 
 if (isset($_POST["data"])) {
 
@@ -53,6 +52,9 @@ if (isset($_POST["data"])) {
     // The resulting JSON from payment request will be in $order variable
     $order = getEcwidPayload($client_secret, $ecwid_payload);
 
+    session_start();
+    session_id(md5($iv . $order['cart']['order']['id']));
+
     // Debug preview of the request decoded earlier
     echo "<h3>REQUEST DETAILS</h3>";
 
@@ -65,10 +67,23 @@ if (isset($_POST["data"])) {
     $firstName = $fullName[0];
     $lastName = $fullName[1];
 
-    // Encode access token and prepare calltack URL template
+    // Encode access token and prepare callback URL template
     $ciphertext_raw = openssl_encrypt($order['token'], $cipher, $client_secret, $options = 0, $iv, $tag);
     $callbackPayload = base64_encode($ciphertext_raw);
-    $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]" . "?storeId=" . $order['storeId'] . "&orderNumber=" . $order['cart']['order']['orderNumber'] . "&callbackPayload=" . $callbackPayload;
+
+    // Encode return URL
+    $returnUrl_raw = openssl_encrypt($order['returnUrl'], $cipher, $client_secret, $options = 0, $iv, $tag);
+    $returnUrlPayload = base64_encode($returnUrl_raw);
+
+    $queryData = http_build_query([
+        'storeId' => $order['storeId'],
+        'orderNumber' => $order['cart']['order']['id'],
+        'callbackPayload' => $callbackPayload,
+    ]);
+
+    $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]?{$queryData}";
+
+    $_SESSION["{$order['cart']['order']['id']}_returnUrl"] = $returnUrlPayload;
 
     // Request parameters to pass into payment gateway
     $request = array(
@@ -139,14 +154,17 @@ function payment_sign($query, $api_key)
 
 if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
 
+    session_start();
+    session_id(md5($iv . $_GET['orderNumber']));
     // Set variables
-    $client_id = "test-rick-payment-template";
     $c = base64_decode($_GET['callbackPayload']);
     $token = openssl_decrypt($c, $cipher, $client_secret, $options = 0, $iv, $tag);
     $storeId = $_GET['storeId'];
     $orderNumber = $_GET['orderNumber'];
     $status = $_GET['status'];
-    $returnUrl = "https://app.ecwid.com/custompaymentapps/$storeId?orderId=$orderNumber&clientId=$client_id";
+    $r = base64_decode($_SESSION["{$orderNumber}_returnUrl"]);
+    $returnUrl = openssl_decrypt($r, $cipher, $client_secret, $options = 0, $iv, $tag);
+    session_destroy();
 
     // Prepare request body for updating the order
     $json = json_encode(array(
@@ -176,6 +194,3 @@ if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
     echo 'Access forbidden!';
 
 }
-
-
-?>
