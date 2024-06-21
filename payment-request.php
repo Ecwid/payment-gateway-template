@@ -1,13 +1,12 @@
 <?php
 
+$client_id = "test-rick-payment-template";
 $client_secret = "lfeKILJMFQVc3vXzW79B6TI5VKs8DFeT"; // This is a dummy value. Place your client_secret key here. You received it from Ecwid team in email when registering the app
 //$cipher = "AES-128-CBC";
 $iv = "abcdefghijklmnopqrstuvwx";// this can be generated random if you plan to store it for later but in this case e.g. openssl_random_pseudo_bytes($ivlen);
 $cipher = "aes-128-gcm";
 $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
 $tag = 0;
-
-// If this is a payment request
 
 if (isset($_POST["data"])) {
 
@@ -53,6 +52,9 @@ if (isset($_POST["data"])) {
     // The resulting JSON from payment request will be in $order variable
     $order = getEcwidPayload($client_secret, $ecwid_payload);
 
+    session_start();
+    session_id(md5($iv . $order['cart']['order']['id']));
+
     // Debug preview of the request decoded earlier
     echo "<h3>REQUEST DETAILS</h3>";
 
@@ -77,10 +79,11 @@ if (isset($_POST["data"])) {
         'storeId' => $order['storeId'],
         'orderNumber' => $order['cart']['order']['id'],
         'callbackPayload' => $callbackPayload,
-        'returnUrlPayload' => $returnUrlPayload,
     ]);
 
     $callbackUrl = "https://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]?{$queryData}";
+
+    $_SESSION["{$order['cart']['order']['id']}_returnUrl"] = $returnUrlPayload;
 
     // Request parameters to pass into payment gateway
     $request = array(
@@ -149,17 +152,19 @@ function payment_sign($query, $api_key)
 
 // If we are returning back to storefront. Callback from payment
 
-if (isset($_GET["callbackPayload"]) && isset($_GET["status"]) && isset($_GET["returnUrlPayload"])) {
+if (isset($_GET["callbackPayload"]) && isset($_GET["status"])) {
 
+    session_start();
+    session_id(md5($iv . $_GET['orderNumber']));
     // Set variables
-    $client_id = "test-rick-payment-template";
     $c = base64_decode($_GET['callbackPayload']);
     $token = openssl_decrypt($c, $cipher, $client_secret, $options = 0, $iv, $tag);
     $storeId = $_GET['storeId'];
     $orderNumber = $_GET['orderNumber'];
     $status = $_GET['status'];
-    $r = base64_decode($_GET['returnUrlPayload']);
+    $r = base64_decode($_SESSION["{$orderNumber}_returnUrl"]);
     $returnUrl = openssl_decrypt($r, $cipher, $client_secret, $options = 0, $iv, $tag);
+    session_destroy();
 
     // Prepare request body for updating the order
     $json = json_encode(array(
@@ -189,6 +194,3 @@ if (isset($_GET["callbackPayload"]) && isset($_GET["status"]) && isset($_GET["re
     echo 'Access forbidden!';
 
 }
-
-
-?>
