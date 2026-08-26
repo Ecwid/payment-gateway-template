@@ -47,7 +47,7 @@ if (isset($_POST["data"])) {
 	}
 
 	// Get payload from the POST and decrypt it
-	$ecwid_payload = $_POST['data'];
+	$ecwid_payload = $_POST['enc_data'];
 
 	// The resulting JSON from payment request will be in $order variable
 	$order = getEcwidPayload($client_secret, $ecwid_payload);
