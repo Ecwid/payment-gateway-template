@@ -36,12 +36,14 @@ if (isset($_POST["enc_data"])) {
 		// Initialization vector is the first 16 bytes of the received data
 		$iv = substr($decoded, 0, 16);
 
-		// The payload itself is is the rest of the received data
-		$payload = substr($decoded, 16);
+		// Tag is the last 16 bytes of the received data
+		$tag = substr($decoded, -16);
+
+		// The payload itself is the rest of the received data
+		$payload = substr($decoded, 16, -16);
 
 		// Decrypt raw binary payload
-		$json = openssl_decrypt($payload, "aes-128-cbc", $key, OPENSSL_RAW_DATA, $iv);
-		//$json = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $key, $payload, MCRYPT_MODE_CBC, $iv); // You can use this instead of openssl_decrupt, if mcrypt is enabled in your system
+		$json = openssl_decrypt($payload, "aes-128-gcm", $key, true, $iv, $tag);
 
 		return $json;
 	}
