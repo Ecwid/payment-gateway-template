@@ -8,7 +8,7 @@ $cipher = "aes-128-gcm";
 $ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
 $tag = 0;
 
-if (isset($_POST["data"])) {
+if (isset($_POST["enc_data"])) {
 
 // Functions to decrypt the payment request from Ecwid
 
