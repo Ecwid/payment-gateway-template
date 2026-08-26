@@ -5,13 +5,11 @@ $client_secret = "lfeKILJMFQVc3vXzW79B6TI5VKs8DFeT"; // This is a dummy value. P
 //$cipher = "AES-128-CBC";
 $iv = "abcdefghijklmnopqrstuvwx";// this can be generated random if you plan to store it for later but in this case e.g. openssl_random_pseudo_bytes($ivlen);
 $cipher = "aes-128-gcm";
-$ivlen = openssl_cipher_iv_length($cipher = "AES-128-CBC");
 $tag = 0;
 
 if (isset($_POST["enc_data"])) {
 
 // Functions to decrypt the payment request from Ecwid
-
 	function getEcwidPayload ($app_secret_key, $data)
 	{
 		// Get the encryption key (16 first bytes of the app's client_secret key)
@@ -21,8 +19,7 @@ if (isset($_POST["enc_data"])) {
 		$json_data = aes_128_decrypt($encryption_key, $data);
 
 		// Decode json
-		$json_decoded = json_decode($json_data, true);
-		return $json_decoded;
+		return json_decode($json_data, true);
 	}
 
 	function aes_128_decrypt ($key, $data)
